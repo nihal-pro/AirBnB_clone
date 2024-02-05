@@ -11,11 +11,22 @@ class BaseModel():
     create class BaseModel
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         initalisation of an object with it's
         attributes
+        Args :
+                Args(won't be used ): list of arguments
+                Kwargs: pass in dictionary as arguments
         """
+        if kwargs:
+            for key, v in kwargs.items():
+                if key != '__class__':
+                    setattr(self, key, v)
+                elif key in ('created_at', 'updated_at'):
+                    Nv = datetime.fromisoformat(v)
+                    setattr(self, key, Nv)
+            return
         self.id = str(uuid.uuid4())
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
