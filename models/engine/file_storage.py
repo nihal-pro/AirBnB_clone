@@ -37,7 +37,7 @@ class FileStorage():
                 if hasattr(v, 'to_dict') and callable(getattr(v, 'to_dict')):
                     serialized_objects[k] = v.to_dict()
                 else:
-                    serialized_objects[k] = v  
+                    serialized_objects[k] = v
             json.dump(serialized_objects, file)
 
     def reload(self):
