@@ -5,6 +5,8 @@ Module:file_storage.py
 
 import os
 import json
+from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage():
@@ -44,12 +46,22 @@ class FileStorage():
         """
         deserializes the JSON file to __objects
         """
+        current_classes = {'BaseModel': BaseModel, 'User': User}
 
         if not os.path.exists(self.__file_path):
             return
 
         with open(self.__file_path, 'r') as file:
+            deserialized = None
+
             try:
-                self.__objects = json.load(file)
+                deserialized = json.load(file)
             except json.JSONDecodeError:
                 pass
+
+            if deserialized is None:
+                return
+
+            self.__objects = {
+                k: current_classes[k.split('.')[0]](**v)
+                for k, v in deserialized.items()}
