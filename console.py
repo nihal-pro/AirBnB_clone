@@ -40,7 +40,7 @@ class HBNBCommand(cmd.Cmd):
         help function
         """
         return super().do_help(arg)
-    
+
     def do_create(self, arg):
         """
         create new instance
@@ -49,18 +49,17 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-    
         if 'BaseModel' not in args:
             print("** class doesn't exist **")
         else:
             new_instance = BaseModel()
             new_instance.save()
             print(new_instance.id)
-    
+
     def do_show(self, arg):
         """
         Show an instance with ID
-        """  
+        """
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
@@ -83,8 +82,8 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, arg):
         """
         destroy an instance with ID
-        """  
-        args = arg.split() 
+        """
+        args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
             return
@@ -101,11 +100,11 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
         else:
             print("** no instance found **")
-     
+
     def do_all(self, arg):
         """
         Prints all string representation of all instances
-        """ 
+        """
         args = arg.split()
         objects = storage.all()
 
@@ -121,7 +120,7 @@ class HBNBCommand(cmd.Cmd):
     def do_update(self, arg):
         """
         Updates an instance
-        """ 
+        """
         args = arg.split()
         objects = storage.all()
         if len(args) == 0:
@@ -131,24 +130,23 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         if len(args) < 2:
-            print("** instance id missing **") 
-            return 
-        if len(args) < 3:
-            print("** attribute name missing **") 
-            return   
-        if len(args) < 4:
-            print("** value missing **") 
+            print("** instance id missing **")
             return
-        
+        if len(args) < 3:
+            print("** attribute name missing **")
+            return
+        if len(args) < 4:
+            print("** value missing **")
+            return
         key = "{}.{}".format(args[0], args[1])
         instances = objects.get(key, None)
         if instances is None:
             print("** no instance found **")
             return
 
-
         setattr(instances, args[2], args[3].lstrip('"').rstrip('"'))
         storage.save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
