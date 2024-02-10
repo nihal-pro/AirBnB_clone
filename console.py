@@ -5,6 +5,7 @@ Module:console.py
 
 import cmd
 import json
+from models import storage
 from models.base_model import BaseModel
 
 
@@ -13,6 +14,7 @@ class HBNBCommand(cmd.Cmd):
     Create commande cmd
     """
     prompt = '(hbnb) '
+    __file_path = "file.json"
 
     def do_quit(self, arg):
         """
@@ -48,7 +50,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
     
-        if args != BaseModel:
+        if 'BaseModel' not in args:
             print("** class doesn't exist **")
         else:
             new_instance = BaseModel()
@@ -59,7 +61,7 @@ class HBNBCommand(cmd.Cmd):
         """
         Show an instance with ID
         """  
-        args = arg.split() 
+        args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
             return
@@ -70,19 +72,14 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 2:
             print("** instance id missing **")
             return
-        istance_id = args[1]
-        try:
-            with open(self.__file_path, "r") as file:
-                data = json.load(file)
-                key = "[{}] ({}) {}".format(
-                class_name, istance_id)
-                if key in data:
-                    print(data[key])
-                else:
-                    print("** no instance found **")
-        except FileNotFoundError:
-            print("** no file found **")
-                
+        objects = storage.all()
+        key = "{}.{}".format(args[0], args[1])
+        instances = objects.get(key, None)
+        if instances is None:
+            print("** no instance found **")
+            return
+        print(instances)
+
     def do_destroy(self, arg):
         """
         destroy an instance with ID
@@ -99,25 +96,28 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         instance_id = args[1]
-        with open(self.__file_path, "r") as file:
-            data = json.load(file)
-            key = "[{}] ({}) {}".format(
-                class_name, instance_id)
-            if key not in data:
-                print("** no instance found **")
-            else:
-                del data[key]
+        objects = storage.all()
+        key = "{}.{}".format(args[0], args[1])
+        instances = objects.get(key, None)
+        if instances is None:
+            print("** no instance found **")
+            return
+        del instances[key]
+        storage.save()
+        
                 
     def do_all(self, arg):
         """
         Prints all string representation of all instances
         """ 
         args = arg.split()
-        if args == BaseModel or args == 0:
-            with open(self.__file_path, "r") as file:
-                data = json.load(file)
-                instances = [key and v for key, v in data.items()]
-                print(str(instances))
+        objects = storage.all()
+        if "BaseModel" in args:
+            key = "{}.{}".format(args[0], args[1])
+            instances = objects.get(key, None)
+            if instances is not None:
+                print(instances)
+                return
         else:
             print("** class doesn't exist **")
 
@@ -137,13 +137,12 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **") 
             return 
         instance_id = args[1]
-        with open(self.__file_path, "r") as file:
-            data = json.load(file)
-            key = "[{}] ({}) {}".format(
-                class_name, instance_id)
-            if key not in data:
-                print("** no instance found **")
-                return
+        objects = storage.all()
+        key = "{}.{}".format(args[0], args[1])
+        instances = objects.get(key, None)
+        if instances is None:
+            print("** no instance found **")
+            return
         if len(args) < 3:
             print("** attribute name missing **") 
             return   
@@ -152,9 +151,8 @@ class HBNBCommand(cmd.Cmd):
             return
         attribute_name = args[2]
         attribute_value = args[3]
-        data[key][attribute_name] = attribute_value
-        with open(self.__file_path, "w") as file:
-            json.dump(data, file)
+        setattr(storage.all()[key],attribute_name ,attribute_value)
+        storage.save()
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
