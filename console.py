@@ -7,6 +7,9 @@ import cmd
 import json
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
+
+classes = {'BaseModel': BaseModel, 'User': User}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -14,7 +17,6 @@ class HBNBCommand(cmd.Cmd):
     Create commande cmd
     """
     prompt = '(hbnb) '
-    __file_path = "file.json"
 
     def do_quit(self, arg):
         """
@@ -49,10 +51,10 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        if 'BaseModel' not in args:
+        if args[0] not in classes.keys():
             print("** class doesn't exist **")
         else:
-            new_instance = BaseModel()
+            new_instance = classes[args[0]]()
             new_instance.save()
             print(new_instance.id)
 
@@ -61,17 +63,17 @@ class HBNBCommand(cmd.Cmd):
         Show an instance with ID
         """
         args = arg.split()
+        objects = storage.all()
         if len(args) == 0:
             print("** class name missing **")
             return
         class_name = args[0]
-        if class_name not in ["BaseModel"]:
+        if class_name not in classes.keys():
             print("** class doesn't exist **")
             return
         if len(args) < 2:
             print("** instance id missing **")
             return
-        objects = storage.all()
         key = "{}.{}".format(args[0], args[1])
         instances = objects.get(key, None)
         if instances is None:
@@ -87,7 +89,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        if args[0] not in ["BaseModel"]:
+        if args[0] not in classes.keys():
             print("** class doesn't exist **")
             return
         if len(args) < 2:
@@ -111,7 +113,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 1:
             print(["{}".format(v) for _, v in objects.items()])
             return
-        if args[0] != "BaseModel":
+        if args[0] not in classes.keys():
             print("** class doesn't exist **")
             return
         else:
@@ -126,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        if args[0] != "BaseModel":
+        if args[0] not in classes.keys():
             print("** class doesn't exist **")
             return
         if len(args) < 2:
@@ -152,7 +154,7 @@ class HBNBCommand(cmd.Cmd):
     def checktype(self, value):
         """check type"""
         if "'" in value or '"' in value:
-            value = str(value)
+            value = str(value.lstrip('"').rstrip('"'))
         elif "." in value:
             value = float(value)
         else:
