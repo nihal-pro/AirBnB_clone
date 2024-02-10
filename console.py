@@ -10,7 +10,7 @@ class HBNBCommand(cmd.Cmd):
     """
     Create commande cmd
     """
-    prompt = '(hbnb)'
+    prompt = '(hbnb) '
 
     def do_quit(self, arg):
         """
@@ -18,17 +18,24 @@ class HBNBCommand(cmd.Cmd):
         """
         return True
 
-    def do_EOF(self, arg):
+    def do_EOF(self, line):
         """
         Ctrl+d commande to Exit the program
         """
+        print("")
         return True
 
-    def empty_line(self):
+    def emptyline(self):
         """
         an empty line + ENTER shoudn't execute anything
         """
         pass
+
+    def do_help(self, arg):
+        """
+        help function
+        """
+        return super().do_help(arg)
 
 
 if __name__ == '__main__':
