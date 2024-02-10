@@ -88,24 +88,20 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
             return
-        class_name = args[0]
-        if class_name not in ["BaseModel"]:
+        if args[0] not in ["BaseModel"]:
             print("** class doesn't exist **")
             return
         if len(args) < 2:
             print("** instance id missing **")
             return
-        instance_id = args[1]
         objects = storage.all()
         key = "{}.{}".format(args[0], args[1])
-        instances = objects.get(key, None)
-        if instances is None:
+        if key in objects:
+            del objects[key]
+            storage.save()
+        else:
             print("** no instance found **")
-            return
-        del instances[key]
-        storage.save()
-        
-                
+     
     def do_all(self, arg):
         """
         Prints all string representation of all instances
@@ -127,32 +123,31 @@ class HBNBCommand(cmd.Cmd):
         Updates an instance
         """ 
         args = arg.split()
+        objects = storage.all()
         if len(args) == 0:
             print("** class name missing **")
             return
-        class_name = args[0]
-        if class_name != BaseModel:
+        if args[0] != "BaseModel":
             print("** class doesn't exist **")
             return
         if len(args) < 2:
             print("** instance id missing **") 
             return 
-        instance_id = args[1]
-        objects = storage.all()
-        key = "{}.{}".format(args[0], args[1])
-        instances = objects.get(key, None)
-        if instances is None:
-            print("** no instance found **")
-            return
         if len(args) < 3:
             print("** attribute name missing **") 
             return   
         if len(args) < 4:
             print("** value missing **") 
             return
-        attribute_name = args[2]
-        attribute_value = args[3]
-        setattr(storage.all()[key],attribute_name ,attribute_value)
+        
+        key = "{}.{}".format(args[0], args[1])
+        instances = objects.get(key, None)
+        if instances is None:
+            print("** no instance found **")
+            return
+
+
+        setattr(instances, args[2], args[3].lstrip('"').rstrip('"'))
         storage.save()
 
 if __name__ == '__main__':
