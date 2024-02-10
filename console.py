@@ -143,11 +143,21 @@ class HBNBCommand(cmd.Cmd):
         if instances is None:
             print("** no instance found **")
             return
-        if not isinstance(args[3], (str, int, float)):
+        """if not isinstance(args[3], (str, int, float)):
             print("** only simple arguments can be updated **")
-            return
-        setattr(instances, args[2], args[3].lstrip('"').rstrip('"'))
+            return"""
+        setattr(instances, args[2], self.checktype(args[3]))
         storage.save()
+
+    def checktype(self, value):
+        """check type"""
+        if "'" in value or '"' in value:
+            value = str(value)
+        elif "." in value:
+            value = float(value)
+        else:
+            value = int(value)
+        return value
 
 
 if __name__ == '__main__':
