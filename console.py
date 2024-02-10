@@ -112,14 +112,15 @@ class HBNBCommand(cmd.Cmd):
         """ 
         args = arg.split()
         objects = storage.all()
-        if "BaseModel" in args:
-            key = "{}.{}".format(args[0], args[1])
-            instances = objects.get(key, None)
-            if instances is not None:
-                print(instances)
-                return
-        else:
+
+        if len(args) < 1:
+            print(["{}".format(v) for _, v in objects.items()])
+            return
+        if args[0] != "BaseModel":
             print("** class doesn't exist **")
+            return
+        else:
+            print(["{}".format(v) for _, v in objects.items()])
 
     def do_update(self, arg):
         """
