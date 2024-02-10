@@ -143,7 +143,9 @@ class HBNBCommand(cmd.Cmd):
         if instances is None:
             print("** no instance found **")
             return
-
+        if not isinstance(args[3], (str, int, float)):
+            print("** only simple arguments can be updated **")
+            return
         setattr(instances, args[2], args[3].lstrip('"').rstrip('"'))
         storage.save()
 
