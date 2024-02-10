@@ -38,7 +38,6 @@ class TestBase(unittest.TestCase):
         self.assertEqual(str(type(b1)),
                          "<class 'models.base_model.BaseModel'>")
 
-
     def test_save_storage(self):
         """Tests that storage.save() is called from save()."""
         b = BaseModel()

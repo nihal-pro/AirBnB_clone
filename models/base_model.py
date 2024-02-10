@@ -48,17 +48,16 @@ class BaseModel():
         models.storage.save()
 
     def to_dict(self):
+        """to_dict methode
+        """
         dict = self.__dict__
         dict['__class__'] = type(self).__name__
-
         if isinstance(self.created_at, datetime):
             dict['created_at'] = self.created_at.isoformat()
         else:
-            dict['created_at'] = self.created_at 
-
+            dict['created_at'] = self.created_at
         if isinstance(self.updated_at, datetime):
             dict['updated_at'] = self.updated_at.isoformat()
         else:
             dict['updated_at'] = self.updated_at
         return dict
-

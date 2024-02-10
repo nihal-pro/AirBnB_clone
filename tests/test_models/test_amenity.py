@@ -23,7 +23,6 @@ class TestAmenity(unittest.TestCase):
 
     def test_params(self):
         """Test method for class attributes"""
-
         a1 = Amenity()
         a2 = Amenity(**a1.to_dict())
         a3 = Amenity("hello", "wait", "in")
