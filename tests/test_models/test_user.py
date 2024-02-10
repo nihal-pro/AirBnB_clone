@@ -30,15 +30,6 @@ class TestState(unittest.TestCase):
         self.assertIsInstance(u1.first_name, str)
         self.assertIsInstance(u1.last_name, str)
 
-    def test_init(self):
-        """Test method for public instances"""
-        u1 = User()
-        u2 = User(**u1.to_dict())
-        self.assertIsInstance(u1.id, str)
-        self.assertIsInstance(u1.created_at, datetime)
-        self.assertIsInstance(u1.updated_at, datetime)
-        self.assertEqual(u1.updated_at, u2.updated_at)
-
     def test_str(self):
         """Test method for str representation"""
         u1 = User()

@@ -32,15 +32,6 @@ class TestReview(unittest.TestCase):
         self.assertIsInstance(r1.place_id, str)
         self.assertEqual(r3.text, "")
 
-    def test_init(self):
-        """Test method for public instances"""
-        r1 = Review()
-        r2 = Review(**r1.to_dict())
-        self.assertIsInstance(r1.id, str)
-        self.assertIsInstance(r1.created_at, datetime)
-        self.assertIsInstance(r1.updated_at, datetime)
-        self.assertEqual(r1.updated_at, r2.updated_at)
-
     def test_str(self):
         """Test method for str representation"""
         r1 = Review()

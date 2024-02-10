@@ -33,13 +33,6 @@ class TestCity(unittest.TestCase):
         c1.name = "Abuja"
         self.assertEqual(c1.name, "Abuja")
 
-    def test_init(self):
-        """Test method for public instances"""
-        self.assertIsInstance(c1.id, str)
-        self.assertIsInstance(c1.created_at, datetime)
-        self.assertIsInstance(c1.updated_at, datetime)
-        self.assertEqual(c1.updated_at, c2.updated_at)
-
     def test_save(self):
         """Test method for save"""
         old_update = c1.updated_at

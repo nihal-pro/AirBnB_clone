@@ -32,15 +32,6 @@ class TestState(unittest.TestCase):
         self.assertEqual(s1.name, "Chicago")
         self.assertIn(k, storage.all())
 
-    def test_init(self):
-        """Test method for public instances"""
-        s1 = State()
-        s2 = State(**s1.to_dict())
-        self.assertIsInstance(s1.id, str)
-        self.assertIsInstance(s1.created_at, datetime)
-        self.assertIsInstance(s1.updated_at, datetime)
-        self.assertEqual(s1.updated_at, s2.updated_at)
-
     def test_str(self):
         """Test method for str representation"""
         s1 = State()

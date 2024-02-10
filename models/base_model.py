@@ -2,7 +2,7 @@
 """
 Module:base_model.py
 """
-from models import storage
+import models
 import uuid
 from datetime import datetime
 
@@ -31,7 +31,7 @@ class BaseModel():
         self.id = str(uuid.uuid4())
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
-        storage.new(self)
+        models.storage.new(self)
 
     def __str__(self):
         """
@@ -45,16 +45,20 @@ class BaseModel():
         update updated_at
         """
         self.updated_at = datetime.now()
-        storage.save()
+        models.storage.save()
 
     def to_dict(self):
-        """
-        return a dict containing all keys/values
-        of ___dict__ of instance
-        """
         dict = self.__dict__
         dict['__class__'] = type(self).__name__
-        dict['created_at'] = dict['created_at'].isoformat()
-        dict['updated_at'] = dict['updated_at'].isoformat()
 
+        if isinstance(self.created_at, datetime):
+            dict['created_at'] = self.created_at.isoformat()
+        else:
+            dict['created_at'] = self.created_at 
+
+        if isinstance(self.updated_at, datetime):
+            dict['updated_at'] = self.updated_at.isoformat()
+        else:
+            dict['updated_at'] = self.updated_at
         return dict
+

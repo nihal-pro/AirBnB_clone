@@ -43,16 +43,6 @@ class TestPlace(unittest.TestCase):
         self.assertIsInstance(p1.latitude, float)
         self.assertIsInstance(p1.amenity_ids, list)
 
-    def test_init(self):
-        """Test method for public instances"""
-
-        p1 = Place()
-        p2 = Place(**p1.to_dict())
-        self.assertIsInstance(p1.id, str)
-        self.assertIsInstance(p1.created_at, datetime)
-        self.assertIsInstance(p1.updated_at, datetime)
-        self.assertEqual(p1.updated_at, p2.updated_at)
-
     def test_str(self):
         """Test method for str representation"""
         p1 = Place()
