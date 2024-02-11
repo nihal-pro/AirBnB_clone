@@ -36,46 +36,30 @@ class FileStorage():
             self.__objects[key] = obj
 
     def save(self):
-        """
-        serializes __objects to the JSON file (path: __file_path)
-        """
-        with open(self.__file_path, 'w') as file:
-            serialized_objects = {}
-            for k, v in self.__objects.items():
-                if hasattr(v, 'to_dict') and callable(getattr(v, 'to_dict')):
-                    serialized_objects[k] = v.to_dict()
-                else:
-                    serialized_objects[k] = v
-            json.dump(serialized_objects, file)
+        """ Serializes __objects to the JSON file (path: __file_path) """
+        new_dict = {}
+        for key, value in FileStorage.__objects.items():
+            new_dict[key] = value.to_dict().copy()
+
+        with open(self.__file_path, mode="w", encoding="utf-8") as my_file:
+            json.dump(new_dict, my_file)
 
     def reload(self):
         """
-        deserializes the JSON file to __objects
+            deserializes the JSON file to __objects,
+            (only if the JSON file (__file_path) exists;
+            otherwise, do nothing.
+            If the file doesn’t exist, no exception should be raised)
         """
-        current_classes = {
-            'BaseModel': BaseModel,
-            'User': User,
-            'Amenity': Amenity,
-            'City': City,
-            'State': State,
-            'Place': Place,
-            'Review': Review
-            }
+        try:
+            with open(self.__file_path, mode="r", encoding="utf-8") as my_file:
+                dict_obj = json.load(my_file)
 
-        if not os.path.exists(self.__file_path):
-            return
-
-        with open(self.__file_path, 'r') as file:
-            deserialized = None
-
-            try:
-                deserialized = json.load(file)
-            except json.JSONDecodeError:
-                pass
-
-            if deserialized is None:
-                return
-
-            self.__objects = {
-                k: current_classes[k.split('.')[0]](**v)
-                for k, v in deserialized.items()}
+            for obj in dict_obj.values():
+                cls_name = obj['__class__']
+                del obj['__class__']
+                class_gl = globals()[cls_name]
+                inst = class_gl(**obj)
+                self.new(inst)
+        except FileNotFoundError:
+            pass
