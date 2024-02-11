@@ -62,20 +62,11 @@ class FileStorage():
             'Review': Review
             }
 
-        if not os.path.exists(self.__file_path):
-            return
-
-        with open(self.__file_path, 'r') as file:
-            deserialized = None
-
-            try:
-                deserialized = json.load(file)
-            except json.JSONDecodeError:
-                pass
-
-            if deserialized is None:
-                return
-
-            self.__objects = {
-                k: current_classes[k.split('.')[0]](**v)
-                for k, v in deserialized.items()}
+        if os.path.isfile(self.__file_path):
+            with open(self.__file_path, 'r') as file:
+                dict_objs = json.load(file)
+                for key, value in dict_objs.items():
+                    cls_name = key.split('.')[0]
+                    if cls_name in current_classes:
+                        instance = current_classes[cls_name](**value)
+                        self.new(instance)
