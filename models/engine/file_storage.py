@@ -39,14 +39,11 @@ class FileStorage():
         """
         serializes __objects to the JSON file (path: __file_path)
         """
-        with open(self.__file_path, 'w', encoding="UTF-8") as file:
-            serialized_objects = {}
-            for k, v in self.__objects.items():
-                if hasattr(v, 'to_dict') and callable(getattr(v, 'to_dict')):
-                    serialized_objects[k] = v.to_dict()
-                else:
-                    serialized_objects[k] = v
-            json.dump(serialized_objects, file, indent=4)
+        save_obj = {}
+        for key, value in self.__objects.items():
+            save_obj[key] = value.to_dict()
+        with open(self.__file_path, "w", encoding="utf-8") as fd:
+            json.dump(save_obj, fd)
 
     def reload(self):
         """
