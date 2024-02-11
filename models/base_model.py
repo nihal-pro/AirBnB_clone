@@ -51,8 +51,8 @@ class BaseModel():
         """
         to_dict methode
         """
-        dict = self.__dict__
-        dict['__class__'] = type(self).__name__
+        dict = self.__dict__.copy()
+        dict['__class__'] = self.__class__.__name__
         if isinstance(self.created_at, datetime):
             dict['created_at'] = self.created_at.isoformat()
         else:
