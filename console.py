@@ -136,48 +136,34 @@ class HBNBCommand(cmd.Cmd):
         """
         Updates an instance
         """
-        argl = arg.split()
-        objdict = storage.all()
-
-        if len(argl) == 0:
+        args = arg.split()
+        objects = storage.all()
+        if len(args) == 0:
             print("** class name missing **")
-            return False
-        if argl[0] not in HBNBCommand.__classes:
+            return
+        if args[0] not in classes.keys():
             print("** class doesn't exist **")
-            return False
-        if len(argl) == 1:
+            return
+        if len(args) < 2:
             print("** instance id missing **")
-            return False
-        if "{}.{}".format(argl[0], argl[1]) not in objdict.keys():
-            print("** no instance found **")
-            return False
-        if len(argl) == 2:
+            return
+        if len(args) < 3:
             print("** attribute name missing **")
-            return False
-        if len(argl) == 3:
-            try:
-                type(eval(argl[2])) != dict
-            except NameError:
-                print("** value missing **")
-                return False
-
-        if len(argl) == 4:
-            obj = objdict["{}.{}".format(argl[0], argl[1])]
-            if argl[2] in obj.__class__.__dict__.keys():
-                valtype = type(obj.__class__.__dict__[argl[2]])
-                obj.__dict__[argl[2]] = valtype(argl[3])
-            else:
-                obj.__dict__[argl[2]] = argl[3]
-        elif type(eval(argl[2])) == dict:
-            obj = objdict["{}.{}".format(argl[0], argl[1])]
-            for k, v in eval(argl[2]).items():
-                if (k in obj.__class__.__dict__.keys() and
-                        type(obj.__class__.__dict__[k]) in {str, int, float}):
-                    valtype = type(obj.__class__.__dict__[k])
-                    obj.__dict__[k] = valtype(v)
-                else:
-                    obj.__dict__[k] = v
+            return
+        if len(args) < 4:
+            print("** value missing **")
+            return
+        key = "{}.{}".format(args[0], args[1])
+        instances = objects.get(key, None)
+        if instances is None:
+            print("** no instance found **")
+            return
+        """if not isinstance(args[3], (str, int, float)):
+            print("** only simple arguments can be updated **")
+            return"""
+        setattr(instances, args[2], args[3].lstrip('"').rstrip('"'))
         storage.save()
+
 
     def do_count(self, arg):
         """ count  the number of instances of a given class."""
